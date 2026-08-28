@@ -1,0 +1,19 @@
+name: tests
+on: [push, pull_request]
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - run: python run_pdhg_lp.py --self-test
+      - run: python -m unittest discover -s tests -v
+      - run: |
+          python run_pdhg_lp.py --seed 42 --n 300 --m 70 --density .03 \
+            --max-iter 5000 --tol 1e-5 --check-every 100 --highs
