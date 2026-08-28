@@ -87,6 +87,46 @@ PDHG had not met the requested `1e-5` residual tolerance, so the run is correctl
 
 No speedup claim is made: on this moderate CPU fixture HiGHS is much faster. The point is to demonstrate the algorithmic structure that becomes attractive when factorization memory is the bottleneck and matrix-vector operations can be parallelized.
 
+## GitHub Actions validation
+
+A GitHub-hosted Ubuntu 24.04 runner validated the implementation on:
+
+```text
+Python  3.12.14
+NumPy   2.5.2
+SciPy   1.18.1
+```
+
+The remote regression suite passed all **5/5 tests**.
+
+The CI smoke configuration used:
+
+```text
+rows          70
+columns      300
+nnz          553
+density    2.6333%
+max_iter    5000
+tolerance   1e-5
+```
+
+Runner-observed result:
+
+```text
+PDHG status                   MAX_ITER
+PDHG iterations                   5000
+PDHG objective                -525.821139
+primal residual                 3.132e-05
+projected dual residual         1.122e-05
+PDHG wall time                     0.252 s
+
+HiGHS objective              -525.820199
+HiGHS wall time                    0.005 s
+relative objective error        1.788e-06
+```
+
+The objective was very close to the HiGHS optimum, but the requested residual tolerance was not met, so the solver correctly remained `MAX_ITER`. The same runner also showed HiGHS substantially faster on this moderate CPU fixture. These values are validation measurements, not a performance claim for PDHG.
+
 ## Tests
 
 - spectral norm hand check;
